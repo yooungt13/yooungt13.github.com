@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>盲盒词条 · 聚会游戏</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-gradient-start: #ff6b9d;
+            --bg-gradient-end: #ffa06b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d2d2d;
+            --text-secondary: #666;
+            --accent-color: #ff4757;
+            --success-color: #26de81;
+            --shadow-color: rgba(255, 107, 157, 0.3);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 装饰性背景元素 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px var(--shadow-color);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '🎲';
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #ffe0e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Noto Sans SC', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans SC', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), #ff6b9d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-draw {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            box-shadow: 0 8px 25px rgba(254, 202, 87, 0.4);
+            margin-top: 10px;
+        }
+
+        .btn-draw:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(254, 202, 87, 0.5);
+        }
+
+        .btn-draw:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .name-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .name-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-radius: 20px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(253, 203, 110, 0.3);
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .name-tag .count {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .remove-btn {
+            background: rgba(255, 71, 87, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: var(--accent-color);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+            animation: resultAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 3rem;
+            opacity: 0.2;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+
+        @keyframes resultAppear {
+            0% {
+                transform: scale(0.8) rotateX(90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotateX(0deg);
+                opacity: 1;
+            }
+        }
+
+        .result-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: 'Ma Shan Zheng', cursive;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-question {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .empty-state::before {
+            content: '🎭';
+            display: block;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-color);
+            animation: slideInLeft 0.4s ease;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .history-name {
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .history-question {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .result-name {
+                font-size: 2rem;
+            }
+
+            .result-question {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎁 盲盒词条</h1>
+            <div class="subtitle">聚会游戏 · 一起玩起来！</div>
+        </header>
+
+        <!-- 第一步：添加参与者 -->
+        <div class="card" id="step1Card">
+            <h2>第一步：添加参与者</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 15px; font-size: 0.95rem;">
+                💡 提示：可以一次性输入多个名字，用逗号分隔（如：张三,李四,王五）
+            </p>
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="输入名字，多个名字用逗号分隔..." style="flex: 1;">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-primary" onclick="addNames()" style="flex: 1;">
+                    <span>➕ 添加参与者</span>
+                </button>
+                <button class="btn-secondary" onclick="clearAllNames()" style="flex: 1;">
+                    <span>🗑️ 清空全部</span>
+                </button>
+            </div>
+            <div class="name-list" id="nameList"></div>
+            <button class="btn-draw" id="startGameBtn" onclick="startGame()" disabled style="margin-top: 20px;">
+                <span>🎮 开始游戏</span>
+            </button>
+        </div>
+
+        <!-- 第二步：游戏进行中 -->
+        <div class="card" id="step2Card" style="display: none;">
+            <h2>第二步：随机抽取</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalNames">0</div>
+                    <div class="stat-label">参与人数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalDraws">0</div>
+                    <div class="stat-label">已抽取次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="remainingDraws">0</div>
+                    <div class="stat-label">剩余次数</div>
+                </div>
+            </div>
+            <button class="btn-draw" id="drawBtn" onclick="drawName()">
+                <span>🎲 随机抽取</span>
+            </button>
+            <button class="btn-secondary" onclick="resetGame()" style="width: 100%; margin-top: 10px;">
+                <span>🔄 重置游戏</span>
+            </button>
+        </div>
+
+        <div id="resultContainer"></div>
+
+        <div class="card">
+            <h2>抽取历史</h2>
+            <div id="historyList">
+                <div class="empty-state">暂无抽取记录</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            "【高光时刻】：这十年里，你觉得自己最\"牛\"的一个瞬间是？",
+            "【打脸】：以前深信不疑，但现在完全推翻的一个观念是？",
+            "【治愈】：最近感到最放松、最快乐的一件事是什么？",
+            "【疯狂】：这十年做过最不像你、最疯狂的一件事？",
+            "【遗憾】：如果能穿越回毕业那天，你想对自己说的一句话？",
+            "【种草】：最近入坑的一个新爱好或者新东西？",
+            "【吐槽】：最近生活/工作中让你最想翻白眼的一件事？",
+            "【梦想】：抛开现实不谈，你现在最想做的一件事情是？",
+            "【财政危机】：说一件你最近买过的、觉得自己脑子进水的\"智商税\"产品。",
+            "【高光时刻】：手机相册里哪张照片看起来最岁月静好？",
+            "【寝室恶霸】：现在坦白：当年在宿舍，哪件事其实是你干的，但你当时死不承认/甩锅给别人了？",
+            "【学海无涯】：大学四年，哪门课你到现在都完全不知道老师讲了啥，甚至连老师长什么样都忘了？",
+            "【如果有来生】：下辈子投胎，如果只能选在座的一位同学做你的老公/老婆，你选谁？",
+            "【全员恶人】：此时此刻，你看在座的谁最\"不顺眼\"？（不管是羡慕嫉妒还是恨），请指出来并说出原因。",
+            "【纯爱战神】：说一件当年为了追人（或暗恋）做过的最舔狗/最矫情的事。（比如写过什么酸掉牙的说说？）",
+            "【荒岛余生】：如果流落荒岛，只能带在场的一位同学一起求生（不仅要活下去，还要不无聊），你会死死抱住谁的大腿？",
+            "【牢底坐穿】：如果咱们这群人里有人会因为\"干了一件蠢事\"而上社会新闻（比如头卡在栏杆里），你觉得大概率会是谁？",
+            "【带娃黑洞】：如果你有急事要把孩子寄养在一位同学家一天，你绝对不敢交给谁？（觉得他/她会把孩子带偏或者弄丢）",
+            "【借钱首选】：如果你深夜急需借5万块钱，且不想解释原因，你觉得给谁打电话成功率最高？",
+            "【当年的白月光】：说实话（不许撒谎），大学刚入学那会儿，你觉得在场的哪位异性最好看/最有气质？（注意：是当年！当年！现在长残了不算。）",
+            "【迟到大王】：如果明天早上8点集合去爬山，你敢打赌谁一定会迟到（或者最后一个到）",
+            "【酒后现原形】：凭印象，谁喝多之后最疯/话最多/最难缠？",
+            "【逆生长】：请环顾四周，凭良心说，你觉得谁这十年完全没变老？"
+        ];
+
+        let participants = [];
+        let drawHistory = [];
+        let usedQuestions = [];
+        let gameStarted = false;
+
+        function updateStats() {
+            const totalNames = participants.length;
+            const totalDraws = drawHistory.length;
+            const maxPossibleDraws = totalNames * 2;
+            const remainingDraws = Math.max(0, maxPossibleDraws - totalDraws);
+
+            document.getElementById('totalNames').textContent = totalNames;
+            document.getElementById('totalDraws').textContent = totalDraws;
+            document.getElementById('remainingDraws').textContent = remainingDraws;
+        }
+
+        function addNames() {
+            const input = document.getElementById('nameInput');
+            const inputValue = input.value.trim();
+
+            if (inputValue === '') {
+                alert('请输入名字！');
+                return;
+            }
+
+            // 使用逗号、顿号、分号分隔名字
+            const names = inputValue.split(/[,，;；、]/).map(n => n.trim()).filter(n => n !== '');
+
+            if (names.length === 0) {
+                alert('请输入有效的名字！');
+                return;
+            }
+
+            let addedCount = 0;
+            let duplicateNames = [];
+
+            names.forEach(name => {
+                if (name.length > 20) {
+                    alert(`名字"${name}"太长了，最多20个字符！`);
+                    return;
+                }
+
+                if (participants.some(p => p.name === name)) {
+                    duplicateNames.push(name);
+                } else {
+                    participants.push({ name: name, count: 0 });
+                    addedCount++;
+                }
+            });
+
+            if (duplicateNames.length > 0) {
+                alert(`以下名字已存在：${duplicateNames.join('、')}`);
+            }
+
+            if (addedCount > 0) {
+                input.value = '';
+                renderNameList();
+                updateStartButton();
+            }
+        }
+
+        function removeName(name) {
+            if (gameStarted) {
+                alert('游戏已开始，无法删除参与者！请重置游戏。');
+                return;
+            }
+            participants = participants.filter(p => p.name !== name);
+            renderNameList();
+            updateStartButton();
+        }
+
+        function clearAllNames() {
+            if (participants.length === 0) {
+                return;
+            }
+            if (confirm('确定要清空所有参与者吗？')) {
+                participants = [];
+                renderNameList();
+                updateStartButton();
+            }
+        }
+
+        function updateStartButton() {
+            const startBtn = document.getElementById('startGameBtn');
+            startBtn.disabled = participants.length === 0;
+        }
+
+        function renderNameList() {
+            const nameList = document.getElementById('nameList');
+            if (participants.length === 0) {
+                nameList.innerHTML = '<div class="empty-state">还没有参与者，快来添加吧！</div>';
+                return;
+            }
+
+            nameList.innerHTML = participants.map(p => {
+                const countDisplay = gameStarted ? `<span class="count">${p.count}/2</span>` : '';
+                const removeBtn = gameStarted ? '' : `<button class="remove-btn" onclick="removeName('${p.name.replace(/'/g, "\\'")}')">×</button>`;
+                
+                return `
+                    <div class="name-tag">
+                        <span>${p.name}</span>
+                        ${countDisplay}
+                        ${removeBtn}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startGame() {
+            if (participants.length === 0) {
+                alert('请先添加参与者！');
+                return;
+            }
+
+            gameStarted = true;
+            
+            // 隐藏第一步，显示第二步
+            document.getElementById('step1Card').style.display = 'none';
+            document.getElementById('step2Card').style.display = 'block';
+            
+            updateStats();
+            renderNameList();
+
+            // 滚动到游戏卡片
+            setTimeout(() => {
+                document.getElementById('step2Card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function drawName() {
+            if (participants.length === 0) {
+                alert('请先添加参与者！');
+                return;
+            }
+
+            // 筛选可以被抽取的人（被抽取次数<2）
+            const availableParticipants = participants.filter(p => p.count < 2);
+
+            if (availableParticipants.length === 0) {
+                alert('所有人都已经被抽取2次了！游戏结束！');
+                return;
+            }
+
+            // 随机选择一个人
+            const randomPerson = availableParticipants[Math.floor(Math.random() * availableParticipants.length)];
+
+            // 选择一个未使用过的题目
+            let question;
+            if (usedQuestions.length >= questions.length) {
+                // 所有题目都用过了，重置
+                usedQuestions = [];
+            }
+
+            const availableQuestions = questions.filter(q => !usedQuestions.includes(q));
+            question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+            usedQuestions.push(question);
+
+            // 更新计数
+            const person = participants.find(p => p.name === randomPerson.name);
+            person.count++;
+
+            // 添加到历史
+            drawHistory.push({ name: randomPerson.name, question: question, timestamp: new Date() });
+
+            // 显示结果
+            showResult(randomPerson.name, question);
+
+            // 更新显示
+            renderNameList();
+            updateStats();
+            renderHistory();
+        }
+
+        function showResult(name, question) {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = `
+                <div class="result-card">
+                    <div class="result-name">🎯 ${name}</div>
+                    <div class="result-question">${question}</div>
+                </div>
+            `;
+
+            // 滚动到结果
+            setTimeout(() => {
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            if (drawHistory.length === 0) {
+                historyList.innerHTML = '<div class="empty-state">暂无抽取记录</div>';
+                return;
+            }
+
+            historyList.innerHTML = drawHistory.slice().reverse().map((item, index) => `
+                <div class="history-item">
+                    <div class="history-name">#${drawHistory.length - index} ${item.name}</div>
+                    <div class="history-question">${item.question}</div>
+                </div>
+            `).join('');
+        }
+
+        function resetGame() {
+            const confirmed = confirm('确定要重置游戏吗？这将清空所有抽取记录并返回第一步！');
+            
+            if (!confirmed) {
+                return;
+            }
+            
+            // 重置所有计数
+            for (let i = 0; i < participants.length; i++) {
+                participants[i].count = 0;
+            }
+            
+            drawHistory = [];
+            usedQuestions = [];
+            gameStarted = false;
+            
+            // 显示第一步，隐藏第二步
+            const step1Card = document.getElementById('step1Card');
+            const step2Card = document.getElementById('step2Card');
+            
+            if (step1Card) step1Card.style.display = 'block';
+            if (step2Card) step2Card.style.display = 'none';
+            
+            // 清空结果容器
+            const resultContainer = document.getElementById('resultContainer');
+            if (resultContainer) resultContainer.innerHTML = '';
+            
+            // 更新显示
+            renderNameList();
+            renderHistory();
+            updateStartButton();
+            
+            // 滚动到顶部
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 100);
+        }
+
+        // 支持回车键添加名字
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addNames();
+            }
+        });
+
+        // 初始化
+        renderNameList();
+        renderHistory();
+        updateStartButton();
+    </script>
+</body>
+</html>
